@@ -12,7 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@cango91/presently-common": "^0.1.4",
+    "@cango91/presently-common": "^0.1.5",
     "amqplib": "^0.10.3",
     "dotenv": "^16.3.1",
     "nodemailer": "^6.9.5",

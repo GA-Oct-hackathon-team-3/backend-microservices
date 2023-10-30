@@ -2,9 +2,9 @@ import './utilities/config-secrets';
 import express from 'express';
 import sanitize from 'express-mongo-sanitize';
 import morgan from 'morgan';
+import serviceAuth from '@cango91/presently-common/dist/middleware/service-authentication';
 import { getConnection, initializeRabbitMQ } from './utilities/config-amqp';
 import connectDB from './utilities/config-db';
-import authService from './middleware/auth-service';
 import authRouter from './routes/auth-router';
 
 const PORT = process.env.PORT || 3001
@@ -25,7 +25,7 @@ const configureApp = (middleware?: any[]) => {
     return app;
 }
 
-const app = configureApp([authService]);
+const app = configureApp([serviceAuth(process.env.AUTH_SERVICE_SECRET!)]);
 
 const server = app.listen(PORT, () => console.log(`Authentication service running at http://localhost:${PORT}/`));
 

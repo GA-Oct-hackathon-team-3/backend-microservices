@@ -20,6 +20,8 @@ services:
     secrets:
       - AUTH_RABBIT_USER
       - AUTH_RABBIT_PASSWORD
+      - USER_RABBIT_PASSWORD
+      - USER_RABBIT_USER
       # - SMTP_RABBIT_PASSWORD
       # - SMTP_RABBIT_USER
       # - EMAIL_RABBIT_USER
@@ -27,6 +29,28 @@ services:
       # - GATEWAY_RABBIT_PASSWORD
       # - GATEWAY_RABBIT_USER
 secrets:
+  REDIS_PASS:
+    file: ./secrets/REDIS_PASS.txt
+  USER_SERVICE_SECRET:
+    file: ./secrets/user/USER_SERVICE_SECRET.txt
+  USER_DB_URL:
+    file: ./secrets/user/USER_DB_URL.txt
+  USER_RABBIT_USER:
+    file: ./secrets/user/USER_RABBIT_USER.txt
+  USER_RABBIT_PASSWORD:
+    file: ./secrets/user/USER_RABBIT_PASSWORD.txt
+  SMTP_RABBIT_USER:
+    file: ./secrets/smtp/SMTP_RABBIT_USER.txt
+  SMTP_RABBIT_PASSWORD:
+    file: ./secrets/smtp/SMTP_RABBIT_PASSWORD.txt
+  SMTP_EMAIL_HOST:
+    file: ./secrets/smtp/SMTP_EMAIL_HOST.txt
+  SMTP_EMAIL_USER:
+    file: ./secrets/smtp/SMTP_EMAIL_USER.txt
+  SMTP_EMAIL_PASSWORD:
+    file: ./secrets/smtp/SMTP_EMAIL_PASSWORD.txt
+  SMTP_EMAIL_FROM:
+    file: ./secrets/smtp/SMTP_EMAIL_FROM.txt
   AUTH_SERVICE_SECRET:
     file: ./secrets/authentication/AUTH_SERVICE_SECRET.txt
   AUTH_DB_URL:
@@ -43,8 +67,6 @@ secrets:
     file: ./secrets/authentication/AUTH_RABBIT_USER.txt
   AUTH_RABBIT_PASSWORD:
     file: ./secrets/authentication/AUTH_RABBIT_PASSWORD.txt
-  REDIS_PASS:
-    file: ./secrets/REDIS_PASS.txt
   AUTH_JWT_SECRET:
     file: ./secrets/authentication/AUTH_JWT_SECRET.txt
   AUTH_JWT_EXPIRE:
