@@ -16,11 +16,15 @@ async function bindQueues() {
 
 async function _bindQueues() {
     channel = getChannel();
-
+    console.log('got channel')
     await channel.assertQueue(qUserCreation, { durable: true });
+    console.log("asserted ", qUserCreation)
     await channel.assertQueue(qUpdateUserProfile, { durable: true });
+    console.log("asserted", qUpdateUserProfile);
     await channel.bindQueue(qUserCreation, 'user-events', qUserCreation);
+    console.log("bound ", qUserCreation);
     await channel.bindQueue(qUpdateUserProfile, 'user-events', qUpdateUserProfile);
+    console.log("bound ", qUpdateUserProfile)
 }
 
 export async function startConsuming() {

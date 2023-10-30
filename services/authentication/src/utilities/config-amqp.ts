@@ -37,7 +37,7 @@ export async function res() {
   try {
     if(killSwitch) return;
     channel = await connection.createChannel();
-    channel.on("error", () => console.log('rabbit channel closed'));
+    channel.on("error", (err) => console.log('rabbit channel closed ', err.message));
     channel.on("close", res);
     await channel.assertExchange('auth-exchange', 'direct', { durable: true, });
     await channel.assertExchange('user-events', 'direct', { durable: true, });

@@ -25,7 +25,7 @@ const configureApp = (middleware?: any[]) => {
 
 const app = configureApp([serviceAuth(process.env.USER_SERVICE_SECRET!)]);
 
-const server = app.listen(PORT, () => console.log(`Authentication service running at http://localhost:${PORT}/`));
+const server = app.listen(PORT, () => console.log(`User service running at http://localhost:${PORT}/`));
 
 // Error-tolerant rabbit connection
 async function initializeServices() {

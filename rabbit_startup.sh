@@ -13,7 +13,7 @@ done
 #rabbitmqctl delete_user guest
 
 # Array of service names, update this as services are added to the image
-SERVICES=("AUTH" "USER")
+SERVICES=("AUTH" "USER" "GATEWAY_WEB")
 
 # Declare three associative arrays for each type of permission
 declare -A SERVICE_CONFIGURE_MAPPING
@@ -24,13 +24,13 @@ SERVICE_CONFIGURE_MAPPING["AUTH"]="^(auth-exchange|user-events)$"
 SERVICE_WRITE_MAPPING["AUTH"]="^(auth-exchange|user-events)$"
 SERVICE_READ_MAPPING["AUTH"]="^(auth-exchange|gateway-exchange|user-events)$"
 
-SERVICE_CONFIGURE_MAPPING["USER"]="^(user-events)$"
-SERVICE_WRITE_MAPPING["USER"]="^(user-events)$"
-SERVICE_READ_MAPPING["USER"]="^(user-events)$"
+SERVICE_CONFIGURE_MAPPING["USER"]="^(user-events|user\.created|user\.update-profile)$"
+SERVICE_WRITE_MAPPING["USER"]="^(user-events|user\.created|user\.update-profile)$"
+SERVICE_READ_MAPPING["USER"]="^(user-events|user\.created|user\.update-profile)$"
 
-# SERVICE_CONFIGURE_MAPPING["GATEWAYW"]="^(gateway-exchange|auth.token)$"
-# SERVICE_WRITE_MAPPING["GATEWAYW"]="^(gateway-exchange|auth.token)$"
-# SERVICE_READ_MAPPING["GATEWAYW"]="^(gateway-exchange|auth-exchange|auth.token)$"
+SERVICE_CONFIGURE_MAPPING["GATEWAY_WEB"]="^(gateway-exchange|auth\.token)$"
+SERVICE_WRITE_MAPPING["GATEWAY_WEB"]="^(gateway-exchange|auth\.token|user-events)$"
+SERVICE_READ_MAPPING["GATEWAY_WEB"]="^(gateway-exchange|auth-exchange|auth\.token)$"
 
 # SERVICE_CONFIGURE_MAPPING["GATEWAYW"]="^(gateway-exchange|auth.token)$"
 # SERVICE_WRITE_MAPPING["GATEWAYW"]="^(gateway-exchange|auth.token)$"

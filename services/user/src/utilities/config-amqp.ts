@@ -11,8 +11,8 @@ export function setKillSwitch(b:boolean){
 
 export async function connectRabbitMQ() {
   let fullConnString = connectionString.split("://");
-  const { AUTH_RABBIT_USER, AUTH_RABBIT_PASSWORD } = process.env;
-  fullConnString = [fullConnString[0], "://", AUTH_RABBIT_USER!, ":", AUTH_RABBIT_PASSWORD!, '@', fullConnString[1]];
+  const { USER_RABBIT_USER, USER_RABBIT_PASSWORD } = process.env;
+  fullConnString = [fullConnString[0], "://", USER_RABBIT_USER!, ":", USER_RABBIT_PASSWORD!, '@', fullConnString[1]];
   const finalConnectionString = fullConnString.join('');
   connection = await amqp.connect(finalConnectionString);
   await res();
@@ -37,7 +37,7 @@ export async function res() {
   try {
     if(killSwitch) return;
     channel = await connection.createChannel();
-    channel.on("error", () => console.log('rabbit channel closed'));
+    channel.on("error", (err) => console.log('rabbit channel closed', err.message));
     channel.on("close", res);
     await channel.assertExchange('user-events', 'direct', { durable: true, });
   } catch (error) {

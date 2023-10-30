@@ -26,11 +26,17 @@ services:
       # - SMTP_RABBIT_USER
       # - EMAIL_RABBIT_USER
       # - EMAIL_RABBIT_PASSWORD
-      # - GATEWAY_RABBIT_PASSWORD
-      # - GATEWAY_RABBIT_USER
+      - GATEWAY_WEB_RABBIT_PASSWORD
+      - GATEWAY_WEB_RABBIT_USER
 secrets:
   REDIS_PASS:
     file: ./secrets/REDIS_PASS.txt
+  AUTH_SERVICE_SECRET:
+    file: ./secrets/gateway-web/AUTH_SERVICE_SECRET.txt
+  GATEWAY_WEB_RABBIT_USER:
+    file: ./secrets/gateway-web/GATEWAY_WEB_RABBIT_USER.txt
+  GATEWAY_WEB_RABBIT_PASSWORD:
+    file: ./secrets/gateway-web/GATEWAY_WEB_RABBIT_PASSWORD.txt
   USER_SERVICE_SECRET:
     file: ./secrets/user/USER_SERVICE_SECRET.txt
   USER_DB_URL:
@@ -51,8 +57,6 @@ secrets:
     file: ./secrets/smtp/SMTP_EMAIL_PASSWORD.txt
   SMTP_EMAIL_FROM:
     file: ./secrets/smtp/SMTP_EMAIL_FROM.txt
-  AUTH_SERVICE_SECRET:
-    file: ./secrets/authentication/AUTH_SERVICE_SECRET.txt
   AUTH_DB_URL:
     file: ./secrets/authentication/AUTH_DB_URL.txt
   AUTH_HASH_ITER_ROUNDS:
