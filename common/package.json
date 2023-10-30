@@ -1,0 +1,19 @@
+{
+  "name": "@cango91/presently-common",
+  "version": "0.1.0",
+  "description": "common configuration and interfaces for presently",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^5.2.2"
+  },
+  "peerDependencies": {
+    "mongoose": "^7.5.3"
+  }
+}

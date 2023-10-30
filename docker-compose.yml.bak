@@ -1,0 +1,28 @@
+version: '3'
+services:
+  redis:
+    image: 'redis'
+    command: ["sh", "-c", "redis-server --requirepass $$(cat /run/secrets/REDIS_PASS) --maxmemory-policy allkeys-lru --maxmemory 128mb"]
+    ports:
+      - "6379:6379"
+    secrets:
+      - REDIS_PASS
+  rabbitmq:
+    image: 'rabbitmq:3-management'
+    command: ["bash", "/scripts/rabbit_startup.sh"]
+    volumes:
+      - ./rabbit_startup.sh:/scripts/rabbit_startup.sh
+    ports:
+      - "5672:5672" # AMQP protocol
+      - "15672:15672" # Management UI
+    environment:
+      RABBIT_URL: amqp://rabbitmq
+    secrets:
+      - AUTH_RABBIT_USER
+      - AUTH_RABBIT_PASSWORD
+      - SMTP_RABBIT_PASSWORD
+      - SMTP_RABBIT_USER
+      - EMAIL_RABBIT_USER
+      - EMAIL_RABBIT_PASSWORD
+      - GATEWAY_RABBIT_PASSWORD
+      - GATEWAY_RABBIT_USER

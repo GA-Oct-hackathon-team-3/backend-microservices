@@ -1,0 +1,57 @@
+version: '3'
+services:
+  redis:
+    image: 'redis'
+    command: ["sh", "-c", "redis-server --requirepass $$(cat /run/secrets/REDIS_PASS) --maxmemory-policy allkeys-lru --maxmemory 128mb"]
+    ports:
+      - "6379:6379"
+    secrets:
+      - REDIS_PASS
+  rabbitmq:
+    image: 'rabbitmq:3-management'
+    command: ["bash", "/scripts/rabbit_startup.sh"]
+    volumes:
+      - ./rabbit_startup.sh:/scripts/rabbit_startup.sh
+    ports:
+      - "5672:5672" # AMQP protocol
+      - "15672:15672" # Management UI
+    environment:
+      RABBIT_URL: amqp://rabbitmq
+    secrets:
+      - AUTH_RABBIT_USER
+      - AUTH_RABBIT_PASSWORD
+      # - SMTP_RABBIT_PASSWORD
+      # - SMTP_RABBIT_USER
+      # - EMAIL_RABBIT_USER
+      # - EMAIL_RABBIT_PASSWORD
+      # - GATEWAY_RABBIT_PASSWORD
+      # - GATEWAY_RABBIT_USER
+secrets:
+  AUTH_SERVICE_SECRET:
+    file: ./secrets/authentication/AUTH_SERVICE_SECRET.txt
+  AUTH_DB_URL:
+    file: ./secrets/authentication/AUTH_DB_URL.txt
+  AUTH_HASH_ITER_ROUNDS:
+    file: ./secrets/authentication/AUTH_HASH_ITER_ROUNDS.txt
+  AUTH_HASH_SALT_LENGTH:
+    file: ./secrets/authentication/AUTH_HASH_SALT_LENGTH.txt
+  AUTH_HASH_DIGEST:
+    file: ./secrets/authentication/AUTH_HASH_DIGEST.txt
+  AUTH_HASH_KEY_LENGTH:
+    file: ./secrets/authentication/AUTH_HASH_KEY_LENGTH.txt
+  AUTH_RABBIT_USER:
+    file: ./secrets/authentication/AUTH_RABBIT_USER.txt
+  AUTH_RABBIT_PASSWORD:
+    file: ./secrets/authentication/AUTH_RABBIT_PASSWORD.txt
+  REDIS_PASS:
+    file: ./secrets/REDIS_PASS.txt
+  AUTH_JWT_SECRET:
+    file: ./secrets/authentication/AUTH_JWT_SECRET.txt
+  AUTH_JWT_EXPIRE:
+    file: ./secrets/authentication/AUTH_JWT_EXPIRE.txt
+  AUTH_REFRESH_SECRET:
+    file: ./secrets/authentication/AUTH_REFRESH_SECRET.txt
+  AUTH_REFRESH_EXPIRE:
+    file: ./secrets/authentication/AUTH_REFRESH_EXPIRE.txt
+  AUTH_SIGN_SECRET:
+    file: ./secrets/authentication/AUTH_SIGN_SECRET.txt
