@@ -6,3 +6,4 @@ import sendEmail from './utilities/send-email';
 import { getFailureCount, incrementFailureCount, resetFailureCount } from './utilities/failure-limiter';
 import { GenericBackoff } from '@cango91/presently-common/dist/functions/generic-backoff';
 
+const PORT = process.env.PORT || 3081;

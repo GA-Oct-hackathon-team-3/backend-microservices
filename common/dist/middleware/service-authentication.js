@@ -9,6 +9,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+/**
+ * Middleware to ensure only authorized requests from internal services are processed.
+ */
 exports.default = (servicePassword) => (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const secret = req.headers['x-service-secret'];
     if (!secret || secret !== servicePassword)
