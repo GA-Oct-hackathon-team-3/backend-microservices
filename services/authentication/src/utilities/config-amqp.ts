@@ -40,6 +40,7 @@ export async function res() {
     channel.on("error", () => console.log('rabbit channel closed'));
     channel.on("close", res);
     await channel.assertExchange('auth-exchange', 'direct', { durable: true, });
+    await channel.assertExchange('user-events', 'direct', { durable: true, });
   } catch (error) {
     console.error('Failed to restart RabbitMQ connection', error);
   }

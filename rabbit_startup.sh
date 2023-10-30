@@ -20,9 +20,9 @@ declare -A SERVICE_CONFIGURE_MAPPING
 declare -A SERVICE_WRITE_MAPPING
 declare -A SERVICE_READ_MAPPING
 
-SERVICE_CONFIGURE_MAPPING["AUTH"]="^(auth-exchange)$"
-SERVICE_WRITE_MAPPING["AUTH"]="^(auth-exchange)$"
-SERVICE_READ_MAPPING["AUTH"]="^(auth-exchange|gateway-exchange)$"
+SERVICE_CONFIGURE_MAPPING["AUTH"]="^(auth-exchange|user-events)$"
+SERVICE_WRITE_MAPPING["AUTH"]="^(auth-exchange|user-events)$"
+SERVICE_READ_MAPPING["AUTH"]="^(auth-exchange|gateway-exchange|user-events)$"
 
 # SERVICE_CONFIGURE_MAPPING["GATEWAYW"]="^(gateway-exchange|auth.token)$"
 # SERVICE_WRITE_MAPPING["GATEWAYW"]="^(gateway-exchange|auth.token)$"

@@ -39,7 +39,7 @@ export async function login(req: Request, res: Response) {
 }
 
 /**
- * Creates a new user and publishes email verification token to the message queue
+ * Creates a new user and publishes email verification tokena and user created event messages to the message queue
  */
 export async function create(req: Request, res: Response) {
     try {
@@ -49,8 +49,12 @@ export async function create(req: Request, res: Response) {
             password,
         });
 
-        const verification = await createAndCacheTokenForUser(user._id);
         const channel = getChannel();
+
+        channel.publish('user-events', 'user.created', Buffer.from(JSON.stringify({_id: user._id})),{messageId: uuid()});
+
+        const verification = await createAndCacheTokenForUser(user._id);
+        
         const messagePayload = {
             token: verification.token,
             email: user.email
