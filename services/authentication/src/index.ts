@@ -4,6 +4,8 @@ import sanitize from 'express-mongo-sanitize';
 import morgan from 'morgan';
 import { getConnection, initializeRabbitMQ } from './utilities/config-amqp';
 import connectDB from './utilities/config-db';
+import authService from './middleware/auth-service';
+import authRouter from './routes/auth-router';
 
 const PORT = process.env.PORT || 3001
 
@@ -18,12 +20,14 @@ const configureApp = (middleware?: any[]) => {
         app.use(middleware);
     }
 
+    app.use('/api', authRouter);
+
     return app;
 }
 
-const app = configureApp();
+const app = configureApp([authService]);
 
-app.listen(PORT, () => console.log(`Authentication service running at http://localhost:${PORT}/`));
+const server = app.listen(PORT, () => console.log(`Authentication service running at http://localhost:${PORT}/`));
 
 // Error-tolerant rabbit connection
 async function initializeServices() {
@@ -33,6 +37,14 @@ async function initializeServices() {
     rabbitConn.on("close", initializeServices);
 }
 
-connectDB();
+if (process.env.NODE_ENV !== "test"){
+    connectDB();
+    (async () => await initializeServices())();
+}
 
-(async () => await initializeServices())();
+
+export {
+    app,
+    configureApp,
+    server
+}

@@ -32,9 +32,9 @@ SERVICE_READ_MAPPING["AUTH"]="^(auth-exchange|gateway-exchange)$"
 # SERVICE_WRITE_MAPPING["GATEWAYW"]="^(gateway-exchange|auth.token)$"
 # SERVICE_READ_MAPPING["GATEWAYW"]="^(gateway-exchange|auth-exchange|auth.token)$"
 
-# SERVICE_CONFIGURE_MAPPING["EMAIL"]="^(email-exchange)$"
-# SERVICE_WRITE_MAPPING["EMAIL"]="^(email-exchange)$"
-# SERVICE_READ_MAPPING["EMAIL"]="^(email-exchange)$"
+# SERVICE_CONFIGURE_MAPPING["SMTP"]="^(smtp-exchange)$"
+# SERVICE_WRITE_MAPPING["SMTP"]="^(smtp-exchange)$"
+# SERVICE_READ_MAPPING["SMTP"]="^(smtp-exchange)$"
 
 # SERVICE_CONFIGURE_MAPPING["SMTP"]="^(verificationEmails|newsEmails|promotionEmails|statusUpdateEmails|genericEmails)$"
 # SERVICE_WRITE_MAPPING["SMTP"]="^(verificationEmails|newsEmails|promotionEmails|statusUpdateEmails|genericEmails)$"

@@ -3,16 +3,12 @@ import amqp, { Connection, Channel } from 'amqplib';
 
 let channel: Channel, connection: Connection;
 const connectionString = process.env.RABBIT_URL ? process.env.RABBIT_URL : 'amqp://localhost/'
-let killSwitch = false;
 
-export function setKillSwitch(b:boolean){
-  killSwitch = b;
-}
 
 export async function connectRabbitMQ() {
   let fullConnString = connectionString.split("://");
-  const { AUTH_RABBIT_USER, AUTH_RABBIT_PASSWORD } = process.env;
-  fullConnString = [fullConnString[0], "://", AUTH_RABBIT_USER!, ":", AUTH_RABBIT_PASSWORD!, '@', fullConnString[1]];
+  const { SMTP_RABBIT_USER, SMTP_RABBIT_PASSWORD } = process.env;
+  fullConnString = [fullConnString[0], "://", SMTP_RABBIT_USER!, ":", SMTP_RABBIT_PASSWORD!, '@', fullConnString[1]];
   const finalConnectionString = fullConnString.join('');
   connection = await amqp.connect(finalConnectionString);
   await res();
@@ -20,8 +16,9 @@ export async function connectRabbitMQ() {
 }
 
 export async function initializeRabbitMQ() {
-  await GenericBackoffWithMaxRetry(connectRabbitMQ, 3000, 10, "Failed to connect to RabbitMQ");
+  await GenericBackoffWithMaxRetry(connectRabbitMQ,3000,10,"Failed to connect to RabbitMQ");
 }
+
 
 export function getChannel() {
   if (!channel) throw new Error('Channel to RabbitMQ not established yet');
@@ -35,11 +32,10 @@ export function getConnection() {
 
 export async function res() {
   try {
-    if(killSwitch) return;
     channel = await connection.createChannel();
     channel.on("error", () => console.log('rabbit channel closed'));
     channel.on("close", res);
-    await channel.assertExchange('auth-exchange', 'direct', { durable: true, });
+    await channel.assertExchange('smtp-exchange', 'direct', { durable: true, });
   } catch (error) {
     console.error('Failed to restart RabbitMQ connection', error);
   }
