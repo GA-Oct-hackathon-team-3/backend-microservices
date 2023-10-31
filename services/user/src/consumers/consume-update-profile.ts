@@ -14,7 +14,8 @@ export async function consumeUpdateProfile(channel: Channel, key: string) {
                     tel: parsed.tel,
                     interests: parsed.interests,
                     photo: parsed.photo,
-                    bio: parsed.bio
+                    bio: parsed.bio,
+                    location: parsed.location
                 }, {new:true, upsert: false});
                 if(!user) throw new Error("User profile not found");
                 console.log("User profile updated for: ", parsed._id);

@@ -11,7 +11,7 @@ const { AUTH_SERVICE_SECRET } = process.env;
 
 export async function signup(req: Request, res: Response) {
     try {
-        const { email, password, name, tel, dob, gender, photo } = req.body;
+        const { email, password, name, tel, dob, gender, photo, location } = req.body;
         const response = await sendServiceRequest(
             `${AUTH_SERVICE_URL}/api`,
             AUTH_SERVICE_SECRET!,
@@ -32,6 +32,7 @@ export async function signup(req: Request, res: Response) {
                 dob,
                 gender,
                 photo,
+                location,
             };
             channel.publish("user-events", "user.update-profile", Buffer.from(JSON.stringify(msg)));
             res.cookie("refreshToken", refreshToken, { signed: true, httpOnly: true });
