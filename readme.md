@@ -7,7 +7,8 @@ This is a rework of PresenTly backend with scalability and availability focus.
 - User Service
 - SMTP Service
 - Friend Service
-- Gift Service
+- Recommendation Service
+- Upload Service
 - Web Gateway
 - Mobile Gateway
 
