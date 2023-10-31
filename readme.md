@@ -53,4 +53,58 @@ Each service can be started with `npm start`. Most, if not all, services depend 
 
 ## API Documentation
 
-This documentation assumes all services are up and running. The only services to be contacted from outside are Gateway APIs. Web Gateway API runs by default on localhost:3010 . 
+This documentation assumes all services are up and running. The only services to be contacted from outside are Gateway APIs. Web Gateway API runs by default on localhost:3010 .
+
+### User Authentication
+---
+#### Signup - Create a new user
+
+- **Endpoint**: `POST /api/users`
+- **Request Body**: JSON object containing:
+  - `email` (required, string)
+  - `password` (required, string)
+  - `name` (optional, string)
+  - `dob` (optional, Date - yyyy-mm-dd)
+  - `gender` (optional, sring - one of "female", "male", "other")
+  - `tel` (optional, number)
+  - `photo` (optional, string)
+  - `interests` (optional, string[])
+  - `location` (optional, string)
+  - `bio` (optional, string)
+- **Response**: JSON object containing:
+  - `accessToken`
+*Note: will set an http-only cookie with the refresh token. Refresh tokens are automatically processed so this process should not require changes on frontend, except for allowing cookies to be sent cross-origin on fetch*
+
+#### Login - Authenticate an existing user
+
+- **Endpoint**: `POST /api/users/login`
+- **Request Body**: JSON object containing:
+  - `email` (required, string)
+  - `password` (required, string)
+- **Response**: JSON object containing:
+  - `accessToken`
+*Note: will set refresh token in http-only cookie*
+
+#### Logout - Revokes the user's refresh token
+- **Endpoint**: `POST /api/users/logout`
+- **Authorization**: Bearer Token
+- **Response**: JSON object containing:
+    - `message: 'Logged out'`
+
+### User Profile
+---
+#### Get Profile - Gets current user's profile
+- **Endpoint**: `GET /api/users/profile/all`
+- **Authorization**: Bearer Token
+- **Response**: JSON object containing:
+    - `_id` (Profile Id)
+    - `user` (User Id)
+    - `name`
+    - `dob`
+    - `gender`
+    - `tel`
+    - `photo`
+    - `interests`
+    - `bio`
+    - `location`
+    - `isVerified` (Email verification status)
