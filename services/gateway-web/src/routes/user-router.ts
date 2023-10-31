@@ -9,5 +9,6 @@ router.post('/login', userCtrl.login);
 router.post('/logout', requireLogin, userCtrl.logout);
 
 router.get('/profile/all', requireLogin, userCtrl.getUserProfile);
+router.put('/profile', requireLogin, userCtrl.updateUserProfile);
 
 export default router;

@@ -123,4 +123,21 @@ export async function getUserProfile(req: Request & IExtReq, res: Response) {
     }
 }
 
+export async function updateUserProfile(req: Request & IExtReq, res: Response) {
+    try {
+        const response = await sendServiceRequest(`${USER_SERVICE_URL}/api/${req.user}`, USER_SERVICE_SECRET!, "PUT", req.body);
+        if (response.ok) {
+            res.status(200).json(response);
+        } else {
+            throw { status: 400, message: (await response.json()).message };
+        }
+    } catch (error: any) {
+        if ('status' in error && 'message' in error) {
+            sendError(res, error as HTTPError);
+        } else {
+            res.status(500).json({ message: "Internal server error" });
+        }
+    }
+}
+
 /* END USER PROFILE */
