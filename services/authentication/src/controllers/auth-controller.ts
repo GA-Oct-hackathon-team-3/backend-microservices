@@ -39,7 +39,7 @@ export async function login(req: Request, res: Response) {
 }
 
 /**
- * Creates a new user and publishes email verification tokena and user created event messages to the message queue
+ * Creates a new user and publishes email verification token and user created event messages to the message queue
  */
 export async function create(req: Request, res: Response) {
     try {
@@ -51,10 +51,10 @@ export async function create(req: Request, res: Response) {
 
         const channel = getChannel();
 
-        channel.publish('user-events', 'user.created', Buffer.from(JSON.stringify({_id: user._id})),{messageId: uuid()});
+        channel.publish('user-events', 'user.created', Buffer.from(JSON.stringify({ _id: user._id })), { messageId: uuid() });
 
         const verification = await createAndCacheTokenForUser(user._id);
-        
+
         const messagePayload = {
             token: verification.token,
             email: user.email
@@ -121,6 +121,24 @@ export async function refresh(req: Request, res: Response) {
         if (!foundUser) throw { status: 404, message: "Not found" };
         const newTokens = await tokenService.refreshTokens(accessToken, refreshToken);
         res.status(200).json({ accessToken: newTokens?.accessToken, refreshToken: newTokens?.refreshToken });
+    } catch (error: any) {
+        if ('status' in error && 'message' in error) {
+            sendError(res, error as HTTPError);
+        } else {
+            res.status(500).json({ message: "Internal server error" });
+        }
+    }
+}
+
+/**
+ * Returns whether a user's email is verified
+ */
+export async function isVerified(req: Request, res: Response) {
+    try {
+        const id = req.params.id;
+        const user = await User.findById(id);
+        if (!user) throw { status: 404, message: "User not found" };
+        res.status(200).json({ isVerified: user.emailVerified });
     } catch (error: any) {
         if ('status' in error && 'message' in error) {
             sendError(res, error as HTTPError);

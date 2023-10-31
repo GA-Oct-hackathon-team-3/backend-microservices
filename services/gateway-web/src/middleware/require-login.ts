@@ -1,12 +1,6 @@
 import { NextFunction, Request, Response } from "express";
+import { IExtReq } from "./bearer";
 
-interface IUser {
-    _id: string;
-}
-
-interface IExtReq {
-    user?: IUser | null;
-}
 
 export default async function requireLogin(req: Request & IExtReq, res: Response, next: NextFunction) {
     if(req.user) return next();

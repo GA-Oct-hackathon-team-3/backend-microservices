@@ -6,6 +6,7 @@ import serviceAuth from '@cango91/presently-common/dist/middleware/service-authe
 import { getConnection, initializeRabbitMQ } from './utilities/config-amqp';
 import connectDB from './utilities/config-db';
 import { startConsuming } from './consumers/consumers';
+import userRouter from './routes/user-router';
 
 const PORT = process.env.PORT || 3011
 
@@ -24,6 +25,8 @@ const configureApp = (middleware?: any[]) => {
 }
 
 const app = configureApp([serviceAuth(process.env.USER_SERVICE_SECRET!)]);
+
+app.use('/api', userRouter);
 
 const server = app.listen(PORT, () => console.log(`User service running at http://localhost:${PORT}/`));
 

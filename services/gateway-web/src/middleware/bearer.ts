@@ -9,7 +9,7 @@ interface IUser {
     _id: string;
 }
 
-interface IExtReq {
+export interface IExtReq {
     user?: IUser | null;
 }
 

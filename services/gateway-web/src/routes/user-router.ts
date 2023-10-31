@@ -8,4 +8,6 @@ router.post('/', userCtrl.signup);
 router.post('/login', userCtrl.login);
 router.post('/logout', requireLogin, userCtrl.logout);
 
+router.get('/profile/all', requireLogin, userCtrl.getUserProfile);
+
 export default router;

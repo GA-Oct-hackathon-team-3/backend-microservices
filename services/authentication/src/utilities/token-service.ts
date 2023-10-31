@@ -95,3 +95,15 @@ export async function refreshTokens(accessToken: string, refreshToken: string): 
         redisClient.del(key);
     }
 }
+
+/**
+ * Returns the user _id (as string) from access token
+ */
+export function getUserFromToken(token: string){
+    try {
+        const decoded = jwt.decode(token) as JwtPayload;
+        return decoded.payload._id;
+    } catch (error) {
+        return null;
+    }
+}
