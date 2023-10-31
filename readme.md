@@ -49,7 +49,18 @@ Each service can be started with `npm start`. Most, if not all, services depend 
 
 + Micro services, in theory, are great for scalability and resiliency. I have never deployed a micro service architecture and foresee a lot of pain points to come in deployment.
 + Web Front-end `send-request` function needs to include `{credentials: 'include'}` option when doing `fetch` requests. This is because the web gateway relies on refresh tokens set in http-only cookies for added security.
++ Web front-end should keep the access token even if it expired. This is because the gateway api will automatically refresh the access token if presented with a valid refresh token cookie, saving the user a trip to the login page.
 + Native Front-end will need to track the expiration of accessTokens and use a manual refresh endpoint on the mobile gateway API to get a new accessToken and refreshToken pair.
+
+#### Deployment Concerns
+
+Heroku while offering a similar mechanism to docker-compose, does not support RabbitMQ directly as an add-on. Redis is available as an add-on. If we were to deploy on Heroku, we might need some modification to how we configure/use amqp and possibly incur additional costs due to using Redis and RabbitMQ equivalent add-ons as Heroku services.
+
+Digital Ocean offers Kubernetes which is a good fit for this project. Although not free, Github Student credits apply. Steep learning curve. We would need to modify how we configure secrets.
+
+Cloud services (like AWS, GCP, Azure) all offer VMs in free tiers, however they usually allow for 1 or 2 instances, which loses the benefit of scalability. Also they'll have the steepest learning curves.
+
+**Suggestions welcome**
 
 ## API Documentation
 
