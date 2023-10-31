@@ -108,3 +108,18 @@ This documentation assumes all services are up and running. The only services to
     - `bio`
     - `location`
     - `isVerified` (Email verification status)
+  
+#### Update Profile - Update current user's profile
+- **Endpoint**: `PUT /api/users/profile`
+- **Authorization**: Bearer Token
+- **Request Body**: JSON object containing:
+  - `name` (optional, string)
+  - `dob` (optional, Date - yyyy-mm-dd)
+  - `gender` (optional, sring - one of "female", "male", "other")
+  - `tel` (optional, number)
+  - `interests` (optional, string[])
+  - `location` (optional, string)
+  - `bio` (optional, string)
+- **Response**: JSON object containing:
+  - `message: "Profile updated"`
+  - `...profile`

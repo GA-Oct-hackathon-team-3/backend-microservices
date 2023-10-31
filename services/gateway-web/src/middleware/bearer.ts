@@ -26,7 +26,7 @@ export default async function bearer(req: Request & IExtReq, res: Response, next
                 const clientRefreshToken = req.signedCookies["refreshToken"];
                 if (clientRefreshToken) {
                     try {
-                        const response = await sendServiceRequest(`${AUTH_SERVICE_URL}/api/auth/refresh`, AUTH_SERVICE_SECRET!, "POST", {
+                        const response = await sendServiceRequest(`${AUTH_SERVICE_URL}/api/refresh`, AUTH_SERVICE_SECRET!, "POST", {
                             accessToken: token,
                             refreshToken: clientRefreshToken,
                         });
