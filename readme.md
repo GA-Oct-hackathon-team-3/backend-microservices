@@ -84,6 +84,7 @@ This documentation assumes all services are up and running. The only services to
   - `bio` (optional, string)
 - **Response**: JSON object containing:
   - `accessToken`
+
 *Note: will set an http-only cookie with the refresh token. Refresh tokens are automatically processed so this process should not require changes on frontend, except for allowing cookies to be sent cross-origin on fetch*
 
 #### Login - Authenticate an existing user
@@ -94,6 +95,7 @@ This documentation assumes all services are up and running. The only services to
   - `password` (required, string)
 - **Response**: JSON object containing:
   - `accessToken`
+  
 *Note: will set refresh token in http-only cookie*
 
 #### Logout - Revokes the user's refresh token
