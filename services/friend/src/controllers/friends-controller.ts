@@ -36,3 +36,14 @@ export async function getAll(req: Request, res: Response) {
     }
 }
 
+export async function getOne(req: Request, res: Response) {
+    try {
+        const {user} = req.body;
+        const friend = await Friend.findById(req.params.id);
+        if(!friend) throw {status:404, message: "Friend not found"};
+        if(!friend.user.equals(user)) throw {status: 403, message: "Forbidden"};
+        res.status(200).json(friend);
+    } catch (error: any) {
+        handleError(res, error);
+    }
+}
