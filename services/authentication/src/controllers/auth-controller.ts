@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { sendError } from '@cango91/presently-common/dist/functions/send-error';
+import handleError from '@cango91/presently-common/dist/functions/handle-error';
 import { HTTPError } from '@cango91/presently-common/dist/types'
 import { toSeconds } from "@cango91/presently-common/dist/functions/to-seconds";
 import mongoose from "mongoose";
@@ -30,11 +30,7 @@ export async function login(req: Request, res: Response) {
             throw { status: 401, message: "Invalid credentials" };
         }
     } catch (error: any) {
-        if ('status' in error && 'message' in error) {
-            sendError(res, error as HTTPError);
-        } else {
-            res.status(500).json({ message: "Internal server error" });
-        }
+        handleError(res, error);
     }
 }
 
@@ -63,11 +59,7 @@ export async function create(req: Request, res: Response) {
         const response = await handleTokens(user._id);
         res.status(201).json(response);
     } catch (error: any) {
-        if ('status' in error && 'message' in error) {
-            sendError(res, error as HTTPError);
-        } else {
-            res.status(500).json({ message: "Internal server error" });
-        }
+        handleError(res, error)
     }
 }
 
@@ -82,11 +74,7 @@ export async function logout(req: Request, res: Response) {
         await redisClient.del(`refresh:${refreshToken}`);
         res.status(204).json({ message: "Logged out" });
     } catch (error: any) {
-        if ('status' in error && 'message' in error) {
-            sendError(res, error as HTTPError);
-        } else {
-            res.status(500).json({ message: "Internal server error" });
-        }
+        handleError(res, error)
     }
 }
 
@@ -122,11 +110,7 @@ export async function refresh(req: Request, res: Response) {
         const newTokens = await tokenService.refreshTokens(accessToken, refreshToken);
         res.status(200).json({ accessToken: newTokens?.accessToken, refreshToken: newTokens?.refreshToken });
     } catch (error: any) {
-        if ('status' in error && 'message' in error) {
-            sendError(res, error as HTTPError);
-        } else {
-            res.status(500).json({ message: "Internal server error" });
-        }
+        handleError(res, error);
     }
 }
 
@@ -140,11 +124,7 @@ export async function isVerified(req: Request, res: Response) {
         if (!user) throw { status: 404, message: "User not found" };
         res.status(200).json({ isVerified: user.emailVerified });
     } catch (error: any) {
-        if ('status' in error && 'message' in error) {
-            sendError(res, error as HTTPError);
-        } else {
-            res.status(500).json({ message: "Internal server error" });
-        }
+        handleError(res, error);
     }
 }
 

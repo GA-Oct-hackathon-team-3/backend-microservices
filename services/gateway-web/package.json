@@ -12,7 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@cango91/presently-common": "^0.1.8",
+    "@cango91/presently-common": "^0.1.13",
     "amqplib": "^0.10.3",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",

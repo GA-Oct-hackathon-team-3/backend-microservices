@@ -7,6 +7,7 @@ import { getConnection, initializeRabbitMQ } from './utilities/config-amqp';
 import express from 'express';
 import bearer from './middleware/bearer';
 import userRouter from './routes/user-router';
+import friendRouter from './routes/friends-router';
 
 const port = 3010;
 
@@ -32,6 +33,7 @@ const configureApp = (middleware?: any[]) => {
 const app = configureApp([bearer]);
 
 app.use('/api/users', userRouter);
+app.use('/api/friends', friendRouter);
 
 app.listen(port, () => console.log(`Gateway Web API service running at http://localhost:${port}/`));
 
