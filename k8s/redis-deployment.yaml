@@ -1,0 +1,44 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      containers:
+      - name: redis
+        image: redis
+        command: 
+        - "sh"
+        - "-c"
+        - "redis-server --requirepass $$(cat /etc/redis-pass/REDIS_PASS) --maxmemory-policy allkeys-lru --maxmemory 128mb"
+        ports:
+        - containerPort: 6379
+        volumeMounts:
+        - name: redis-pass-volume
+          mountPath: /etc/redis-pass
+      volumes:
+      - name: redis-pass-volume
+        secret:
+          secretName: redis-server-secret
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-service
+spec:
+  selector:
+    app: redis
+  ports:
+    - protocol: TCP
+      port: 6379
+      targetPort: 6379

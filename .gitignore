@@ -1,1 +1,3 @@
 secrets
+generated_commands.sh
+rabbitmq_secret_command.sh

@@ -9,8 +9,11 @@ const SECRETS_PATH = process.env.SECRETS_PATH || '/run/secrets/';
 const loadSecrets = () => {
     const secrets = fs_1.default.readdirSync(SECRETS_PATH);
     secrets.forEach((secret) => {
-        const secretValue = fs_1.default.readFileSync(path_1.default.join(SECRETS_PATH, secret), 'utf8').trim();
-        process.env[secret] = secretValue;
+        const secretFilePath = path_1.default.join(SECRETS_PATH, secret);
+        if (fs_1.default.statSync(secretFilePath).isFile()) {
+            const secretValue = fs_1.default.readFileSync(secretFilePath, 'utf8').trim();
+            process.env[secret] = secretValue;
+        }
     });
 };
 const loadDockerSecrets = () => {

@@ -7,8 +7,11 @@ const loadSecrets = () => {
     const secrets = fs.readdirSync(SECRETS_PATH);
 
     secrets.forEach((secret) => {
-        const secretValue = fs.readFileSync(path.join(SECRETS_PATH, secret), 'utf8').trim();
-        process.env[secret] = secretValue;
+        const secretFilePath = path.join(SECRETS_PATH, secret);
+        if (fs.statSync(secretFilePath).isFile()) {
+            const secretValue = fs.readFileSync(secretFilePath, 'utf8').trim();
+            process.env[secret] = secretValue;
+        }
     });
 };
 

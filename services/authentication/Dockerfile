@@ -12,4 +12,7 @@ RUN npm run build
 RUN npm prune --production
 
 EXPOSE 3001
+
+ENV RABBIT_URL=amqp://rabbitmq-service:5672
+
 CMD ["node", "dist/index.js"]
