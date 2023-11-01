@@ -1,4 +1,5 @@
-import './utilities/config-secrets';
+import secrets from '@cango91/presently-common/dist/functions/config-secrets';
+secrets();
 import express from 'express';
 import sanitize from 'express-mongo-sanitize';
 import morgan from 'morgan';

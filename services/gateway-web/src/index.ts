@@ -1,4 +1,5 @@
-import './utilities/config-secrets';
+import secrets from '@cango91/presently-common/dist/functions/config-secrets';
+secrets();
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
 import { FRONTEND_URL } from '@cango91/presently-common/dist/constants';
