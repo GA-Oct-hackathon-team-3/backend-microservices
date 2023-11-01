@@ -29,7 +29,7 @@ const app = configureApp([serviceAuth(process.env.FRIEND_SERVICE_SECRET!)]);
 app.use('/api/friends', friendsRouter);
 app.use('/api/tags', tagsRouter);
 
-const server = app.listen(PORT, () => console.log(`User service running at http://localhost:${PORT}/`));
+const server = app.listen(PORT, () => console.log(`Friend service running at http://localhost:${PORT}/`));
 
 // Error-tolerant rabbit connection
 async function initializeServices() {
@@ -41,7 +41,7 @@ async function initializeServices() {
 
 if (process.env.NODE_ENV !== "test") {
     connectDB();
-    (async () => await initializeServices())();
+    //(async () => await initializeServices())();
 }
 
 
