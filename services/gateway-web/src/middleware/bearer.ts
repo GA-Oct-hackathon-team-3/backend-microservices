@@ -23,6 +23,7 @@ export default async function bearer(req: Request & IExtReq, res: Response, next
             req.user = (decoded as JwtPayload).payload._id;
         } catch (e: any) {
             if (e.name === 'TokenExpiredError') {
+                // attempt an automatic refresh
                 const clientRefreshToken = req.signedCookies["refreshToken"];
                 if (clientRefreshToken) {
                     try {
@@ -35,6 +36,8 @@ export default async function bearer(req: Request & IExtReq, res: Response, next
                             const decoded = jwt.verify(accessToken, AUTH_JWT_SECRET!);
                             req.user = (decoded as JwtPayload).payload._id;
                             res.set("x-access-token", accessToken);
+                            // we have to add the following header due to cors, so the newly set header is accessible to the client
+                            res.set("Access-Control-Expose-Headers","x-access-token");
                             res.cookie("refreshToken", refreshToken, { signed: true, httpOnly: true });
                         }
                     } catch (error) {

@@ -89,5 +89,27 @@ export async function update(req: Request, res: Response) {
 }
 
 export async function addTag(req: Request, res: Response) {
-
+    try {
+        const friendId = req.params.id;
+        const friend = await Friend.findById(friendId);
+        if (!friend) throw { status: 404, message: "Friend not found" };
+        if (friend?.user.toString() !== req.body.user) throw { status: 403, message: "User not authorized for this request" }
+        let { title, type } = req.body;
+        title = title.toLowerCase();
+        type = type ? type.toLowerCase() : "custom";
+        let existingTag = await Tag.findOne({ title });
+        let tagCreated = false;
+        if (!existingTag || existingTag.type !== type) {
+            existingTag = await Tag.create({ title, type });
+            tagCreated = true;
+        }
+        if (!friend.tags.includes(existingTag._id)) {
+            friend.tags.push(existingTag._id);
+            await friend.save();
+        }
+        const statusCode = tagCreated ? 201 : 200;
+        res.status(statusCode).json({ ...existingTag });
+    } catch (error:any) {
+        handleError(res,error);
+    }
 }
