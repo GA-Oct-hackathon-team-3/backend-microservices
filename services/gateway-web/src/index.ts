@@ -8,6 +8,7 @@ import express from 'express';
 import bearer from './middleware/bearer';
 import userRouter from './routes/user-router';
 import friendRouter from './routes/friends-router';
+import tagsRouter from './routes/tags-router';
 
 const port = 3010;
 
@@ -34,6 +35,7 @@ const app = configureApp([bearer]);
 
 app.use('/api/users', userRouter);
 app.use('/api/friends', friendRouter);
+app.use('/api/tags', tagsRouter);
 
 app.listen(port, () => console.log(`Gateway Web API service running at http://localhost:${port}/`));
 

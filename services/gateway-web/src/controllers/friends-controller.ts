@@ -35,15 +35,31 @@ export async function getAll(req: Request & IExtReq, res: Response) {
     }
 }
 
-export async function getOne(req:Request & IExtReq, res: Response){
+export async function getOne(req: Request & IExtReq, res: Response) {
     try {
-        const response = await sendServiceRequest(`${FRIEND_SERVICE_URL}/api/friends/${req.params.id}`, FRIEND_SERVICE_SECRET!, "POST", {user: req.user});
-        if(response.ok){
+        const response = await sendServiceRequest(`${FRIEND_SERVICE_URL}/api/friends/${req.params.id}`, FRIEND_SERVICE_SECRET!, "POST", { user: req.user });
+        if (response.ok) {
             res.status(200).json(await response.json());
-        }else{
-            throw {status: 400, message: "Bad request"};
+        } else {
+            throw { status: 400, message: "Bad request" };
         }
-    } catch (error:any) {
-        handleError(res,error);
+    } catch (error: any) {
+        handleError(res, error);
+    }
+}
+
+export async function update(req: Request & IExtReq, res: Response) {
+    try {
+        const response = await sendServiceRequest(`${FRIEND_SERVICE_URL}/api/friends/${req.params.id}`, FRIEND_SERVICE_SECRET!, "PUT", {
+            ...req.body,
+            user: req.user
+        });
+        if (response.ok) {
+            res.status(200).json(await response.json());
+        } else {
+            throw { status: 400, message: "Bad request" };
+        }
+    } catch (error: any) {
+        handleError(res, error);
     }
 }

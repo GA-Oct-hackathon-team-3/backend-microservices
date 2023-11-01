@@ -6,5 +6,6 @@ const router = Router();
 router.post('/create', friendsCtrl.create);
 router.post('/', friendsCtrl.getAll);
 router.post('/:id', friendsCtrl.getOne);
+router.put('/:id', friendsCtrl.update);
 
 export default router;
