@@ -35,8 +35,8 @@ secrets:
     file: ./secrets/gateway-web/AUTH_SERVICE_SECRET.txt
   GATEWAY_WEB_RABBIT_USER:
     file: ./secrets/gateway-web/GATEWAY_WEB_RABBIT_USER.txt
-  GATEWAY_WEB_RABBIT_PASS:
-    file: ./secrets/gateway-web/GATEWAY_WEB_RABBIT_PASS.txt
+  GATEWAY_WEB_RABBIT_PASSWORD:
+    file: ./secrets/gateway-web/GATEWAY_WEB_RABBIT_PASSWORD.txt
   USER_SERVICE_SECRET:
     file: ./secrets/user/USER_SERVICE_SECRET.txt
   USER_DB_URL:

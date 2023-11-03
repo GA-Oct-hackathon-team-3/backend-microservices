@@ -29,7 +29,8 @@ export async function create(req: Request, res: Response) {
 export async function getAll(req: Request, res: Response) {
     try {
         const { user } = req.body;
-        const friends = await Friend.find({ user });
+        const friends = await Friend.find({ user })
+            .populate('tags');
         if (friends.length > 0) return res.status(200).json(friends);
         else if (friends.length === 0) return res.status(200).json({ message: 'No friends found' });
     } catch (error: any) {
@@ -40,7 +41,8 @@ export async function getAll(req: Request, res: Response) {
 export async function getOne(req: Request, res: Response) {
     try {
         const { user } = req.body;
-        const friend = await Friend.findById(req.params.id);
+        const friend = await Friend.findById(req.params.id)
+            .populate('tags');
         if (!friend) throw { status: 404, message: "Friend not found" };
         if (!friend.user.equals(user)) throw { status: 403, message: "Forbidden" };
         res.status(200).json(friend);
