@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import handleError from '@cango91/presently-common/dist/functions/handle-error';
+import GiftRecommendation from "../models/giftRecommendation";
 
 import { SYS_PROMPT, rateLimiterOpenAI, fetchImageThumbnail } from '../utilities/utils';
 
@@ -53,66 +54,46 @@ export async function generateGift(req: Request, res: Response) {
     }
 }
 
-// export async function favoriteGift(req: Request & IExtReq, res: Response) {
-//     try {
-//         const { title, reason, imgSrc, imageSearchQuery, giftType, estimatedCost } = req.body;
-//         const friendId = req.params.id;
-//         const friend = await Friend.findById(friendId);
-//         if (!friend) throw { status: 404, message: "Friend not found" };
-//         if (friend?.user.toString() !== req.user?.toString()) throw { status: 403, message: "User not authorized for this request" }
-//         if (!title || !reason || !imgSrc || !imageSearchQuery || !giftType || !estimatedCost) throw { status: 400, message: "Missing information" };
-//         const recommendation = await GiftRecommendation.create({
-//             title,
-//             reason,
-//             image: imgSrc,
-//             imageSearchQuery,
-//             giftType,
-//             estimatedCost,
-//             friend: friend._id
-//         });
-//         res.status(201).json({ recommendation });
-//     } catch (error: any) {
-//         if ('status' in error && 'message' in error) {
-//             sendError(res, error as HTTPError);
-//         } else {
-//             res.status(500).json({ message: "Internal server error" });
-//         }
-//     }
-// }
+export async function favoriteGift(req : Request, res : Response) {
+    try {
+        const { title, reason, imgSrc, imageSearchQuery, giftType, estimatedCost, friendId } = req.body;
+        const gift = await GiftRecommendation.create({
+            title,
+            reason,
+            image: imgSrc,
+            imageSearchQuery,
+            giftType,
+            estimatedCost,
+            friend: friendId
+        });
 
-// export async function removeFavorite(req: Request & IExtReq, res: Response) {
-//     try {
-//         const friendId = req.params.id;
-//         const favoriteId = req.params.favoriteId
-//         const friend = await Friend.findById(friendId);
-//         if (!friend) throw { status: 404, message: "Friend not found" };
-//         if (friend?.user.toString() !== req.user?.toString()) throw { status: 403, message: "User not authorized for this request" }
-//         const favorite = await GiftRecommendation.findById(favoriteId);
-//         if (!favorite) throw { status: 404, message: "Gift not found" };
-//         await favorite.deleteOne();
-//         res.status(200).json({ message: "Favorite gift removed" });
-//     } catch (error: any) {
-//         if ('status' in error && 'message' in error) {
-//             sendError(res, error as HTTPError);
-//         } else {
-//             res.status(500).json({ message: "Internal server error" });
-//         }
-//     }
-// }
+        res.status(201).json({ gift });
 
-// export async function getFavoritesOfFriend(req: Request & IExtReq, res: Response) {
-//     try {
-//         const friendId = req.params.id;
-//         const friend = await Friend.findById(friendId);
-//         if (!friend) throw { status: 404, message: "Friend not found" };
-//         if (friend?.user.toString() !== req.user?.toString()) throw { status: 403, message: "User not authorized for this request" }
-//         const favorites = await GiftRecommendation.find({ friend: friend._id });
-//         res.status(200).json({favorites});
-//     } catch (error: any) {
-//         if ('status' in error && 'message' in error) {
-//             sendError(res, error as HTTPError);
-//         } else {
-//             res.status(500).json({ message: "Internal server error" });
-//         }
-//     }
-// }
+    } catch (error: any) {
+        handleError(res, error);
+    }
+}
+
+export async function removeFavorite(req : Request, res : Response) {
+    try {
+        const favorite = await GiftRecommendation.findById(req.body.favoriteId);
+        if (!favorite) throw { status: 404, message: "Gift not found" };
+        if (favorite.friend.toString() !== req.body.friendId) throw { status: 403, message: "Forbidden" };
+        
+        await favorite.deleteOne();
+
+        res.status(200).json({ message: "Favorite gift removed" });
+
+    } catch (error: any) {
+        handleError(res, error);
+    }
+}
+
+export async function getFavoritesOfFriend(req : Request, res : Response) {
+    try {
+        const favorites = await GiftRecommendation.find({ friend: req.body.friendId });
+        res.status(200).json({ favorites });
+    } catch (error: any) {
+        handleError(res, error);
+    }
+}

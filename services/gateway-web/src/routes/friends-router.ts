@@ -10,6 +10,10 @@ router.get('/', requireLogin, friendsCtrl.getAll);
 router.get('/:id', requireLogin, friendsCtrl.getOne);
 router.put('/:id/update', requireLogin, friendsCtrl.update);
 router.post('/:id/tags',requireLogin, friendsCtrl.addTag);
+
 router.post('/:id/generate-gift', requireLogin, giftCtrl.recommendGift);
+router.post('/:id/favorites', requireLogin, giftCtrl.favoriteGift);
+router.get('/:id/favorites', requireLogin, giftCtrl.getFavoritesOfFriend);
+router.delete('/:id/favorites/:favoriteId', requireLogin, giftCtrl.removeFavorite);
 
 export default router;
