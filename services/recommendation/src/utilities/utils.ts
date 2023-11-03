@@ -27,4 +27,25 @@ Generate gift recommendations based on input.
 ]`
 
 export const rateLimiterOpenAI = new SlidingWindowRateLimiter(3, 60000);
+export const rateLimiterBing = new SlidingWindowRateLimiter(3, 1000);
+
+export async function fetchImageThumbnail(query: string, apiKey: string) {
+    if (rateLimiterBing.isRateLimited("default")) return "";
+    const endpoint = `https://api.bing.microsoft.com/v7.0/images/search?q=${encodeURIComponent(query)}`;
+    const headers = { 'Ocp-Apim-Subscription-Key': apiKey };
+    try {
+        const response = await fetch(endpoint, { headers });
+        if (response.ok) {
+            const data = await response.json();
+            const thumbnailUrl = data.value[0]?.thumbnailUrl;
+            return thumbnailUrl;
+        } else {
+            console.error(`API request failed: ${response.status}`);
+            return null;
+        }
+    } catch (error) {
+        console.error(`Fetch error: ${error}`);
+        return null;
+    }
+}
 

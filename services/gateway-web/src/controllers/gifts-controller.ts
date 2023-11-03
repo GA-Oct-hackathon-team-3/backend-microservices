@@ -6,30 +6,17 @@ import { IExtReq } from "../middleware/bearer";
 
 const { REC_SERVICE_SECRET, FRIEND_SERVICE_SECRET } = process.env;
 
-interface IGiftRequest {
-    gender: string,
-    age: number,
-    budget: string,
-    giftTypes: [],
-    tags: [],
-
-}
-
-// import OpenAI from 'openai';
-// const openai = new OpenAI();
-
 
 export async function recommendGift(req: Request & IExtReq, res: Response) {
     try {
         const friendResponse = await sendServiceRequest(`${FRIEND_SERVICE_URL}/api/friends/${req.params.id}`, FRIEND_SERVICE_SECRET!, "POST", { user: req.user });
         if (friendResponse.ok) {
             const friend = await friendResponse.json();
-            const giftDetails : IGiftRequest = {
-                ...req.body,
-                dob: friend.dob,
-                gender: friend.gender
-            }
-            const giftResponse = await sendServiceRequest(`${REC_SERVICE_URL}/api/gifts/`, REC_SERVICE_SECRET!, 'POST', { giftDetails });
+            const giftResponse = await sendServiceRequest(`${REC_SERVICE_URL}/api/gifts/`, REC_SERVICE_SECRET!, 'POST', { 
+                ...req.body, 
+                dob: friend.dob, 
+                gender: friend.gender 
+            });
                 if (giftResponse.ok) res.status(200).json(await giftResponse.json());
                 else throw { status: 400, message: 'Failed to get gift'}
         } else {
