@@ -5,6 +5,8 @@ import morgan from 'morgan';
 import serviceAuth from '@cango91/presently-common/dist/middleware/service-authentication';
 import { getConnection, initializeRabbitMQ } from './utilities/config-amqp';
 import connectDB from './utilities/config-db';
+import giftsRouter from './routes/gifts-router';
+
 const PORT = process.env.PORT || 3031
 
 const configureApp = (middleware?: any[]) => {
@@ -23,6 +25,7 @@ const configureApp = (middleware?: any[]) => {
 
 const app = configureApp([serviceAuth(process.env.REC_SERVICE_SECRET!)]);
 
+app.use('/api/gifts', giftsRouter);
 
 const server = app.listen(PORT, () => console.log(`Recommendation service running at http://localhost:${PORT}/`));
 
