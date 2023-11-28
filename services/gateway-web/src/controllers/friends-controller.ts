@@ -64,7 +64,7 @@ export async function update(req: Request & IExtReq, res: Response) {
     }
 }
 
-export async function addTag(req:Request & IExtReq, res: Response){
+export async function updateTags(req:Request & IExtReq, res: Response){
     try {
         const response = await sendServiceRequest(`${FRIEND_SERVICE_URL}/api/friends/${req.params.id}/tags`, FRIEND_SERVICE_SECRET!, "POST", {
             ...req.body,

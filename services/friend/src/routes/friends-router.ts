@@ -7,6 +7,6 @@ router.post('/create', friendsCtrl.create);
 router.post('/', friendsCtrl.getAll);
 router.post('/:id', friendsCtrl.getOne);
 router.put('/:id', friendsCtrl.update);
-router.post('/:id/tags', friendsCtrl.addTag);
+router.post('/:id/tags', friendsCtrl.updateTags);
 
 export default router;

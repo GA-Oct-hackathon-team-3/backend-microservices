@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import { Request, Response } from "express";
 import handleError from '@cango91/presently-common/dist/functions/handle-error';
 import Friend from "../models/friend";
@@ -90,27 +91,38 @@ export async function update(req: Request, res: Response) {
     }
 }
 
-export async function addTag(req: Request, res: Response) {
+export async function updateTags(req: Request, res: Response) {
     try {
         const friendId = req.params.id;
         const friend = await Friend.findById(friendId);
-        if (!friend) throw { status: 404, message: "Friend not found" };
-        if (friend?.user.toString() !== req.body.user) throw { status: 403, message: "User not authorized for this request" }
-        let { title, type } = req.body;
-        title = title.toLowerCase();
-        type = type ? type.toLowerCase() : "custom";
-        let existingTag = await Tag.findOne({ title });
-        let tagCreated = false;
-        if (!existingTag || existingTag.type !== type) {
-            existingTag = await Tag.create({ title, type });
-            tagCreated = true;
-        }
-        if (!friend.tags.includes(existingTag._id)) {
-            friend.tags.push(existingTag._id);
-            await friend.save();
-        }
-        const statusCode = tagCreated ? 201 : 200;
-        res.status(statusCode).json({ ...existingTag });
+        if (!friend) throw { status: 404, message: 'Friend not found' };
+        if (friend?.user.toString() !== req.body.user) throw { status: 403, message: 'User not authorized for this request' }
+
+        const tags = req.body;
+
+        // map tags into array of promises
+        const tagPromises = tags.map(async (tag : any) => {
+
+            // checks if tag is object with id to skip querying
+            if (tag._id) { // if tag has an id...
+                
+                // ensure that its a valid ObjectId
+                if (!mongoose.Types.ObjectId.isValid(tag._id)) throw { status: 400, message: 'Invalid ObjectId provided for the tag' };
+                return new mongoose.Types.ObjectId(tag._id); // return tag id
+            } else {
+                let title = tag.title ? tag.title.toLowerCase() : tag.toLowerCase(); // extracts title, considers object or string
+                let existingTag = await Tag.findOne({ title }); // find the existing tag with title
+                if (!existingTag) existingTag = await Tag.create({ title, type: 'custom' }); // create if it doesn't exist
+                return new mongoose.Types.ObjectId(existingTag._id); // return tag id
+            }
+        });
+
+        const resolvedTags = await Promise.all(tagPromises); // resolving promises, compiling array of ObjectIds
+        
+        friend.tags = resolvedTags; // update friends.tags
+        await friend.save(); // save friend
+
+        res.status(200).json({ message: 'Tags updated successfully' });
     } catch (error:any) {
         handleError(res,error);
     }
