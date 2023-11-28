@@ -1,8 +1,8 @@
 import { Router } from "express";
-import { getAll } from "../controllers/tags-controller";
+import * as tagsCtrl from "../controllers/tags-controller";
 
 const router = Router();
 
-router.get("/", getAll);
+router.get("/", tagsCtrl.getDefaultTags);
 
 export default router;

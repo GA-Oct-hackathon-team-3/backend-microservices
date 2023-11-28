@@ -5,7 +5,7 @@ import { Request, Response } from "express";
 
 const { FRIEND_SERVICE_SECRET } = process.env;
 
-export async function getAll(req: Request, res: Response) {
+export async function getDefaultTags(req: Request, res: Response) {
     try {
         const response = await sendServiceRequest(`${FRIEND_SERVICE_URL}/api/tags`, FRIEND_SERVICE_SECRET!);
         if (response.ok) {
