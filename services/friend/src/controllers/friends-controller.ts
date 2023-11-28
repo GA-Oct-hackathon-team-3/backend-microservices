@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import { Request, Response } from "express";
 import handleError from '@cango91/presently-common/dist/functions/handle-error';
+import { daysUntilBirthday, formatFriendsData } from "../utilities/format-friends";
 import Friend from "../models/friend";
 import Tag from "../models/tag";
 
@@ -29,10 +30,107 @@ export async function create(req: Request, res: Response) {
 
 export async function getAll(req: Request, res: Response) {
     try {
-        const { user } = req.body;
-        const friends = await Friend.find({ user })
-            .populate('tags');
-        if (friends.length > 0) return res.status(200).json(friends);
+        const friends = await Friend.aggregate([
+            {
+              $match: { user: new mongoose.Types.ObjectId(req.body.user) }, // searching for users friends
+            },
+            {
+                $addFields: {
+                    today: new Date(),
+                    dobMonth: { $month: '$dob' },
+                    dobDay: { $dayOfMonth: '$dob' },
+                },
+            },
+            {
+                $addFields: {
+                    nextBirthday: { // finds the next birthday with dob month, day and today's year
+                        $dateFromParts: {
+                            year: { $year: '$today' },
+                            month: '$dobMonth',
+                            day: '$dobDay',
+                            timezone: req.body.timezone
+                        },
+                    },
+                },
+            },
+            {
+                $addFields: {
+                    nextBirthday: {
+                        $cond: {
+                            if: { $lt: ['$dobMonth', { $month: '$today' } ] }, // if the month is before today's month...
+                            then: {
+                                $dateFromParts: {
+                                    year: { $add: [{ $year: '$nextBirthday' }, 1] }, // add 1 year to next birthday
+                                    month: '$dobMonth',
+                                    day: '$dobDay',
+                                    timezone: req.body.timezone
+                                },
+                            },
+                            else: {
+                                $cond: {
+                                    if: { $and: [
+                                        { $eq: ['$dobMonth', { $month: '$today' } ] }, 
+                                        { $lt: ['$dobDay', { $dayOfMonth: '$today' } ] }, // if months are equal and dob day is less...
+                                    ] },
+                                    then: {
+                                        $dateFromParts: {
+                                            year: { $add: [{ $year: '$nextBirthday' }, 1] }, // add 1 year to next birthday
+                                            month: '$dobMonth',
+                                            day: '$dobDay',
+                                            timezone: req.body.timezone
+                                        },
+                                    },
+                                    else: '$nextBirthday',
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+            {
+                $addFields: {
+                    daysUntilBirthday: {
+                        $dateDiff: { // find the dateDiff between today and the next birthday, return in number of days
+                            startDate: '$today',
+                            endDate: '$nextBirthday',
+                            unit: 'day',
+                            timezone: req.body.timezone
+                        },
+                    },
+                },
+            },
+            {
+                $sort: {
+                    daysUntilBirthday: 1, // sort by daysUntilBirthday in ascending order
+                },
+            },
+            {
+                $project: { // removes unnecessary fields
+                    today: 0,
+                    dobMonth: 0,
+                    dobDay: 0,
+                    nextBirthday: 0,
+                },
+            },
+            {
+                $set: { 
+                    'dob': { // transforms dob into string format, (toJSON not working with aggregation)
+                        $dateToString: {
+                            format: '%Y-%m-%d',
+                            date: '$dob'
+                        }
+                    }
+                }
+            }
+        ]);
+ 
+        await Friend.populate(friends, { path: 'favoriteGifts' }); // populates gifts
+        
+        if (friends.length > 0) {
+            // formats friends query result into object containing today, thisWeek, thisMonth, and laterOn keys
+            const result = formatFriendsData(friends);
+            return res.status(200).json(result);
+        }
         else if (friends.length === 0) return res.status(200).json({ message: 'No friends found' });
     } catch (error: any) {
         handleError(res, error);
@@ -46,7 +144,14 @@ export async function getOne(req: Request, res: Response) {
             .populate('tags');
         if (!friend) throw { status: 404, message: "Friend not found" };
         if (!friend.user.equals(user)) throw { status: 403, message: "Forbidden" };
-        res.status(200).json(friend);
+
+        // format result with friend data and calculated daysUntilBirthday
+        const result = {
+            ...friend.toJSON(),
+            daysUntilBirthday: daysUntilBirthday(friend.dob, req.body.timezone)
+        }
+
+        res.status(200).json(result);
     } catch (error: any) {
         handleError(res, error);
     }
