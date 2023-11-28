@@ -42,3 +42,25 @@ export async function getDefaultTags(req:Request, res: Response){
         handleError(res,error);
     }
 }
+
+
+export async function getTagSuggestions (req : Request, res : Response) {
+    try {
+        const searchTerm = req.query.search as string || '';
+        if (searchTerm === '') return;
+        const suggested = await Tag.find({ 
+            type: 'custom',
+            title: {
+                $regex: `^${searchTerm.toLowerCase()}`
+            }
+         });
+
+         if (suggested.length === 0) return res.status(200).json({ message: 'No suggested tags' });
+
+         return res.status(200).json(suggested);
+    } catch (error : any) {
+        return res.status(500).json({
+            error: error.message
+        });
+    }
+}
